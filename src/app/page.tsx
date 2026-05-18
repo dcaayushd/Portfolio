@@ -24,6 +24,10 @@ import { FadeIn } from '@/components/motion';
 import { SectionHeading } from '@/components/section-heading';
 import { SocialLinks } from '@/components/social-links';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { SplineHeroOnly } from '@/components/ui/spline-hero-only';
+import { BackgroundPaths } from '@/components/ui/background-paths';
+import { GooeyTextRole } from '@/components/gooey-text-role';
+// import { ThreeJsShowcase } from '@/components/ui/three-js-showcase';
 import { portfolio } from '@/data/portfolio';
 import { getGithubRepos } from '@/lib/github';
 import { getProfileSnapshot } from '@/lib/profile';
@@ -32,6 +36,8 @@ import { formatGithubDate } from '@/lib/utils';
 
 // Revalidate GitHub projects every 12 hours (43200 seconds)
 export const revalidate = 43200;
+
+import { DesktopNav } from '@/components/desktop-nav';
 
 export default async function HomePage() {
   const username = process.env.GITHUB_USERNAME || 'dcaayushd';
@@ -52,24 +58,6 @@ export default async function HomePage() {
 
   const currentRole = profileSnapshot.experience[0];
   const currentStudy = profileSnapshot.education[0];
-  const currentImpact = portfolio.experienceImpact;
-  const workSignals = [
-    {
-      label: 'Backend stack',
-      value: 'Django REST + Celery + FAISS',
-      note: 'API delivery, async jobs, retrieval'
-    },
-    {
-      label: 'Live system inputs',
-      value: 'CMS cache + RAG + Ollama',
-      note: 'grounded package and support flows'
-    },
-    {
-      label: 'QA surface',
-      value: '86 backend tests',
-      note: 'conversation, package, and support flows'
-    }
-  ];
   const skillGroups = Object.entries(portfolio.skills);
   const focusCards = [
     { icon: BrainCircuit, ...portfolio.focusAreas[0], label: 'AI systems', href: aiTrack?.href || '/projects#category-ai-ml-vision' },
@@ -88,7 +76,7 @@ export default async function HomePage() {
   }));
 
   const navItems = [
-    { href: '#top', label: 'Home' },
+    { href: '#home', label: 'Home' },
     { href: '#projects', label: 'Projects' },
     { href: '#about', label: 'About' },
     { href: '#timeline', label: 'Experience' },
@@ -147,19 +135,13 @@ export default async function HomePage() {
       <header className="nav">
         <div className="container">
           <div className="nav-shell nav-inner">
-            <a href="#top" className="brand">
-              <span className="brand-mark">AD</span>
+            <a href="#home" className="brand">
               <span className="brand-copy">
-                <strong>{portfolio.name}</strong>
-                <span>{portfolio.role}</span>
+                <strong className="brand-signature">{portfolio.name}</strong>
               </span>
             </a>
 
-            <nav className="nav-links" aria-label="Section navigation">
-              {navItems.map((item) => (
-                <a href={item.href} key={item.href}>{item.label}</a>
-              ))}
-            </nav>
+            <DesktopNav navItems={navItems} />
 
             <div className="nav-actions nav-actions-desktop">
               <a className="button button-ghost nav-resume" href={portfolio.resumePath} download>
@@ -174,85 +156,54 @@ export default async function HomePage() {
         </div>
       </header>
 
-      <section className="hero" id="top">
-        <div className="container hero-grid">
-          <FadeIn>
-            <div className="hero-copy">
-              <div className="hero-meta" aria-label="Location and availability">
-                <a href="#contact" className="eyebrow eyebrow-strong hero-meta-pill hero-meta-link">
-                  <MapPin size={16} />
-                  {portfolio.location}
-                </a>
-                <a href="#contact" className="eyebrow hero-meta-pill hero-meta-link">{portfolio.availabilityShort}</a>
-              </div>
+    
 
-              <h1>{portfolio.heroTitle}</h1>
-              <p className="hero-summary">{portfolio.tagline}</p>
-
-              <div className="hero-tags" aria-label="Core strengths">
-                {heroHighlights.map((tag) => (
-                  <a href={tag.href} className="hero-tag hero-tag-link" key={tag.label}>{tag.label}</a>
-                ))}
-              </div>
-
-              <div className="hero-actions">
-                <a className="button button-primary" href="/projects">
-                  <ArrowRight size={18} />
-                  View projects
-                </a>
-                <a className="button button-secondary" href={portfolio.resumePath} download>
-                  <Download size={18} />
-                  Resume
-                </a>
-              </div>
-
-              <SocialLinks links={heroSocialLinks} className="hero-socials" />
-            </div>
-          </FadeIn>
-
-          <FadeIn delay={0.08}>
-            <article className="card panel-card hero-curation-panel">
-              <div className="hero-curation-header">
-                <div>
-                  <span className="mini-label">How I build</span>
-                  <h2>A proven approach to shipping products.</h2>
+      <BackgroundPaths>
+        <section className="hero" id="home">
+          <div className="container hero-grid">
+            <FadeIn>
+              <div className="hero-copy">
+                <div className="hero-meta" aria-label="Location and availability">
+                  <a href="#contact" className="eyebrow eyebrow-strong hero-meta-pill hero-meta-link">
+                    <MapPin size={16} />
+                    {portfolio.location}
+                  </a>
+                  <a href="#contact" className="eyebrow hero-meta-pill hero-meta-link">{portfolio.availabilityShort}</a>
                 </div>
+
+                <h1>{portfolio.heroTitle}</h1>
+                <GooeyTextRole roles={["AI/ML Engineer", "Flutter Developer"]} />
+                <p className="hero-summary">{portfolio.tagline}</p>
+
+                <div className="hero-tags" aria-label="Core strengths">
+                  {heroHighlights.map((tag) => (
+                    <a href={tag.href} className="hero-tag hero-tag-link" key={tag.label}>{tag.label}</a>
+                  ))}
+                </div>
+
+                <div className="hero-actions">
+                  <a className="button button-primary" href="/projects">
+                    <ArrowRight size={18} />
+                    View projects
+                  </a>
+                  <a className="button button-secondary" href={portfolio.resumePath} download>
+                    <Download size={18} />
+                    Resume
+                  </a>
+                </div>
+
+                <SocialLinks links={heroSocialLinks} className="hero-socials" />
               </div>
+            </FadeIn>
 
-              <p className="muted hero-curation-intro">{portfolio.shortBio}</p>
-
-              <div className="hero-delivery-approach">
-                {portfolio.deliveryApproach.map((step) => (
-                  <div className="delivery-step" key={step.label}>
-                    <div className="delivery-step-label">{step.label}</div>
-                    <strong>{step.title}</strong>
-                    <p className="muted">{step.description}</p>
-                  </div>
-                ))}
+            <FadeIn delay={0.08}>
+              <div className="hero-curation-panel flex items-center justify-center h-full">
+                <SplineHeroOnly />
               </div>
-
-              <div className="hero-snapshot-grid">
-                {snapshot.map((item) => {
-                  const Icon = item.icon;
-
-                  return (
-                    <a href={item.href} className="hero-snapshot-card" key={item.label}>
-                      <div className="hero-snapshot-top">
-                        <div className="profile-icon">
-                          <Icon size={16} />
-                        </div>
-                        <span className="profile-label">{item.label}</span>
-                      </div>
-                      <strong>{item.value}</strong>
-                    </a>
-                  );
-                })}
-              </div>
-            </article>
-          </FadeIn>
-        </div>
-      </section>
-
+            </FadeIn>
+          </div>
+        </section>
+      </BackgroundPaths>
       <section className="section" id="projects">
         <div className="container">
           <SectionHeading
@@ -330,7 +281,6 @@ export default async function HomePage() {
           ) : null}
         </div>
       </section>
-
       <section className="section" id="about">
         <div className="container">
           <SectionHeading
@@ -408,106 +358,64 @@ export default async function HomePage() {
           <SectionHeading
             eyebrow="Experience"
             title="Work and education."
-            description="Open a card to see the current role, delivery scope, and study focus."
+            description="Professional background and academic journey."
           />
 
           <div className="timeline-grid">
             <FadeIn>
-              <details className="card panel-card timeline-card timeline-detail timeline-card-work" data-section="work">
-                <summary className="timeline-summary">
-                  <div className="timeline-summary-main">
-                    <div className="profile-icon timeline-summary-icon">
-                      <BriefcaseBusiness size={18} />
-                    </div>
-                    <div>
-                      <div className="mini-label">Work</div>
-                      <h3>{currentImpact.title}</h3>
-                      <div className="muted timeline-summary-copy">{currentImpact.company}</div>
-                      <p className="muted timeline-preview">Django chatbot backend work across retrieval, live package data, async jobs, and production-facing support flows.</p>
-                    </div>
+              <div className="card panel-card" style={{ padding: '2rem', height: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
+                  <div className="profile-icon">
+                    <BriefcaseBusiness size={20} />
                   </div>
-
-                  <div className="timeline-summary-side">
-                    <span className="timeline-note">{currentImpact.period}</span>
-                    <span className="timeline-state">{currentRole?.state || 'In progress'}</span>
-                    <span className="timeline-toggle">
-                      Details
-                      <ChevronDown size={16} />
-                    </span>
-                  </div>
-                </summary>
-
-                <div className="timeline-detail-body timeline-detail-layout">
-                  <div className="timeline-detail-main">
-                    <p className="muted experience-impact-summary">{currentImpact.summary}</p>
-
-                    <div className="experience-impact-list">
-                      {currentImpact.bullets.map((item) => (
-                        <div className="experience-impact-item" key={item}>
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <aside className="timeline-detail-side">
-                    <div className="timeline-signal-grid">
-                      {workSignals.map((item) => (
-                        <div className="timeline-signal-card" key={item.label}>
-                          <span>{item.label}</span>
-                          <strong>{item.value}</strong>
-                          <p className="muted">{item.note}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </aside>
+                  <h3 style={{ margin: 0 }}>Work Experience</h3>
                 </div>
-              </details>
+                <div className="linkedin-timeline">
+                  {profileSnapshot.experience.map((role) => (
+                    <div className="linkedin-timeline-item" key={role.company + role.title}>
+                      <div className="linkedin-timeline-indicator"></div>
+                      <div className="linkedin-timeline-content">
+                        <h4 style={{ margin: '0 0 0.25rem 0', fontSize: '1.05rem', fontWeight: 600 }}>{role.title}</h4>
+                        <div style={{ fontWeight: 500, color: 'var(--text)', marginBottom: '0.25rem' }}>{role.company}</div>
+                        <div className="muted" style={{ fontSize: '0.85rem', marginBottom: '0.75rem' }}>
+                          {role.period}
+                        </div>
+                        <p className="muted" style={{ lineHeight: 1.6, fontSize: '0.95rem' }}>
+                          {role.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </FadeIn>
 
             <FadeIn delay={0.08}>
-              <details className="card panel-card timeline-card timeline-detail" data-section="education">
-                <summary className="timeline-summary">
-                  <div className="timeline-summary-main">
-                    <div className="profile-icon timeline-summary-icon">
-                      <GraduationCap size={18} />
-                    </div>
-                    <div>
-                      <div className="mini-label">Education</div>
-                      <h3>{currentStudy?.degree || 'Education'}</h3>
-                      <div className="muted timeline-summary-copy">{currentStudy?.institution || 'Current program'}</div>
-                      <p className="muted timeline-preview">Computer science fundamentals paired with active AI/ML, Python backend, and Flutter project work.</p>
-                    </div>
+              <div className="card panel-card" style={{ padding: '2rem', height: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
+                  <div className="profile-icon">
+                    <GraduationCap size={20} />
                   </div>
-
-                  <div className="timeline-summary-side">
-                    <span className="timeline-note">{currentStudy?.period || 'Ongoing'}</span>
-                    <span className="timeline-state">{currentStudy?.state || 'In progress'}</span>
-                    <span className="timeline-toggle">
-                      Details
-                      <ChevronDown size={16} />
-                    </span>
-                  </div>
-                </summary>
-
-                <div className="timeline-detail-body timeline-detail-layout">
-                  <div className="timeline-detail-main">
-                    <p className="muted experience-impact-summary">
-                      {currentStudy?.description || 'Studying core computer science while building practical AI/ML, backend, and Flutter systems.'}
-                    </p>
-
-                    <div className="timeline-course-grid" aria-label="Coursework highlights">
-                      {(currentStudy?.coursework || []).map((item) => (
-                        <div className="timeline-signal-card timeline-course-card" key={item.label}>
-                          <span>{item.label}</span>
-                          <strong>{item.title}</strong>
-                          <p className="muted">{item.courses}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <h3 style={{ margin: 0 }}>Education</h3>
                 </div>
-              </details>
+                <div className="linkedin-timeline">
+                  {profileSnapshot.education.map((study) => (
+                    <div className="linkedin-timeline-item" key={study.institution + study.degree}>
+                      <div className="linkedin-timeline-indicator"></div>
+                      <div className="linkedin-timeline-content">
+                        <h4 style={{ margin: '0 0 0.25rem 0', fontSize: '1.05rem', fontWeight: 600 }}>{study.institution}</h4>
+                        <div style={{ fontWeight: 500, color: 'var(--text)', marginBottom: '0.25rem' }}>{study.degree}</div>
+                        <div className="muted" style={{ fontSize: '0.85rem', marginBottom: '0.75rem' }}>
+                          {study.period}
+                        </div>
+                        <p className="muted" style={{ lineHeight: 1.6, fontSize: '0.95rem' }}>
+                          {study.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </FadeIn>
           </div>
         </div>
