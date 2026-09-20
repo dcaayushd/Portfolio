@@ -1,0 +1,8 @@
+/*
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.github.com https://formspree.io; form-action 'self' https://formspree.io; frame-src 'none'; manifest-src 'self'; upgrade-insecure-requests
+  Permissions-Policy: accelerometer=(), autoplay=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Cross-Origin-Opener-Policy: same-origin
+  Strict-Transport-Security: max-age=31536000

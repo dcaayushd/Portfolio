@@ -1,5 +1,5 @@
 import { portfolio } from '@/data/portfolio';
-import { GithubRepo } from '@/lib/github';
+import type { GithubRepo } from '@/lib/github-repo';
 
 export type ProjectCategory = 'AI/ML & Vision' | 'Backend & APIs' | 'Flutter Apps';
 
@@ -158,7 +158,7 @@ function isShowcaseRepo(repo: GithubRepo) {
   const name = repo.name.toLowerCase();
   const text = buildRepoText(repo);
 
-  if (name === 'dcaayushd' || name.includes('portfolio')) {
+  if (repo.fork || name === 'dcaayushd' || name.includes('portfolio')) {
     return false;
   }
 

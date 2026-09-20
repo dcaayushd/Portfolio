@@ -1,11 +1,12 @@
 'use client';
 
-import { Send } from 'lucide-react';
+import { Mail, Send } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 
-export function ContactForm() {
+export function ContactForm({ email }: { email: string }) {
   const endpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT;
   const [state, setState] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const mailto = `mailto:${email}?subject=${encodeURIComponent('Portfolio inquiry')}`;
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -35,6 +36,22 @@ export function ContactForm() {
     }
   }
 
+  if (!endpoint) {
+    return (
+      <div className="contact-direct">
+        <p className="eyebrow">Direct contact</p>
+        <h3>Let&apos;s talk about the work.</h3>
+        <p className="muted">
+          For AI/ML, backend, or Flutter opportunities, email is the quickest way to reach me.
+        </p>
+        <a className="button button-primary" href={mailto}>
+          <Mail size={18} />
+          Email Aayush
+        </a>
+      </div>
+    );
+  }
+
   return (
     <form className="contact-form" onSubmit={onSubmit} action={endpoint} method="POST">
       <label className="field">
@@ -51,23 +68,19 @@ export function ContactForm() {
       </label>
       <div className="contact-actions">
         <button
-          className={`button ${endpoint ? 'button-primary' : 'button-secondary'}`}
+          className="button button-primary"
           type="submit"
-          disabled={!endpoint || state === 'sending'}
+          disabled={state === 'sending'}
         >
           <Send size={18} />
-          {endpoint ? (state === 'sending' ? 'Sending...' : 'Send message') : 'Form unavailable'}
+          {state === 'sending' ? 'Sending...' : 'Send message'}
         </button>
         <p className="form-note muted" aria-live="polite">
-          {endpoint
-            ? state === 'success'
-              ? 'Message sent successfully.'
-              : state === 'error'
-                ? 'Something went wrong. Try again.'
-                : 'Ready when you are.'
+          {state === 'success'
+            ? 'Message sent successfully.'
             : state === 'error'
-              ? 'Add NEXT_PUBLIC_FORMSPREE_ENDPOINT in .env.local first.'
-              : 'Set NEXT_PUBLIC_FORMSPREE_ENDPOINT in .env.local.'}
+              ? 'Something went wrong. Try again.'
+              : 'Ready when you are.'}
         </p>
       </div>
     </form>

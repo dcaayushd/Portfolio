@@ -1,5 +1,7 @@
-import { ArrowUpRight, GitFork, Globe, Star } from 'lucide-react';
-import { GithubRepo } from '@/lib/github';
+import Link from 'next/link';
+import { ArrowRight, ArrowUpRight, GitFork, Globe, Star } from 'lucide-react';
+import { getCaseStudyByRepo } from '@/data/case-studies';
+import type { GithubRepo } from '@/lib/github-repo';
 import { formatProjectName, inferProjectCategory } from '@/lib/projects';
 import { formatGithubDate } from '@/lib/utils';
 
@@ -7,23 +9,19 @@ export function ProjectCard({
   repo,
   variant = 'secondary',
   label,
-  hoverPreview = false,
   previewNote
 }: {
   repo: GithubRepo;
   variant?: 'lead' | 'secondary' | 'recent';
   label?: string;
-  hoverPreview?: boolean;
   previewNote?: string;
 }) {
   const topics = (repo.topics || []).slice(0, variant === 'recent' ? 2 : 4);
   const displayName = formatProjectName(repo.name);
   const category = inferProjectCategory(repo);
-  const previewSrc = `https://opengraph.githubassets.com/1/${repo.html_url.replace(/^https?:\/\/github\.com\//, '')}`;
-  const previewBadge = repo.homepage ? 'Live demo + GitHub preview' : 'GitHub preview';
-
+  const caseStudy = getCaseStudyByRepo(repo.name);
   return (
-    <article className={`card project-card project-card-${variant}${hoverPreview ? ' project-card-hover-preview' : ''}`}>
+    <article className={`card project-card project-card-${variant}`}>
       <div className="project-top">
         <div className="project-copy">
           <div className="project-kicker-row">
@@ -61,21 +59,17 @@ export function ProjectCard({
         ))}
       </div>
 
+      {caseStudy ? (
+        <Link href={'/projects/' + caseStudy.slug} className="project-case-link">
+          Read case study <ArrowRight size={15} />
+        </Link>
+      ) : null}
+
       <div className="project-footer muted">
         <span><Star size={16} /> {repo.stargazers_count}</span>
         <span><GitFork size={16} /> {repo.forks_count}</span>
         <span>Updated {formatGithubDate(repo.updated_at)}</span>
       </div>
-
-      {hoverPreview ? (
-        <div className="project-hover-preview" aria-hidden="true">
-          <img src={previewSrc} alt="" loading="lazy" />
-          <div className="project-hover-preview-overlay">
-            <span className="project-badge">{previewBadge}</span>
-            {previewNote ? <span className="project-badge project-badge-muted">{previewNote}</span> : null}
-          </div>
-        </div>
-      ) : null}
     </article>
   );
 }

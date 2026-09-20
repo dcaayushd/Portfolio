@@ -1,478 +1,477 @@
 import {
-  ArrowUpRight,
+  ArrowDown,
   ArrowRight,
-  BrainCircuit,
-  ChevronDown,
-  BriefcaseBusiness,
+  ArrowUpRight,
   Download,
-  GitFork,
   Github,
-  GraduationCap,
-  Instagram,
   Linkedin,
   Mail,
-  MapPin,
-  Server,
-  Smartphone,
-  Star,
-  Twitter
+  MapPin
 } from 'lucide-react';
+import Link from 'next/link';
 import { ContactForm } from '@/components/contact-form';
-import { CursorGlow } from '@/components/cursor-glow';
+import { LiveGithubProjects } from '@/components/live-github-projects';
 import { MobileNav } from '@/components/mobile-nav';
 import { FadeIn } from '@/components/motion';
-import { SectionHeading } from '@/components/section-heading';
 import { SocialLinks } from '@/components/social-links';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { SplineHeroOnly } from '@/components/ui/spline-hero-only';
-import { BackgroundPaths } from '@/components/ui/background-paths';
-import { GooeyTextRole } from '@/components/gooey-text-role';
-// import { ThreeJsShowcase } from '@/components/ui/three-js-showcase';
+import { DesktopNav } from '@/components/desktop-nav';
+import { getCaseStudyByRepo } from '@/data/case-studies';
 import { portfolio } from '@/data/portfolio';
 import { getGithubRepos } from '@/lib/github';
 import { getProfileSnapshot } from '@/lib/profile';
 import { buildProjectCategories, getShowcaseRepos } from '@/lib/projects';
 import { formatGithubDate } from '@/lib/utils';
 
-// Revalidate GitHub projects every 12 hours (43200 seconds)
-export const revalidate = 43200;
-
-import { DesktopNav } from '@/components/desktop-nav';
+export const revalidate = 3600;
 
 export default async function HomePage() {
   const username = process.env.GITHUB_USERNAME || 'dcaayushd';
   const profileSnapshot = await getProfileSnapshot();
   const repos = await getGithubRepos(username).catch(() => []);
-  const filteredRepos = repos.filter((repo) => repo.name.toLowerCase() !== username.toLowerCase());
-  const showcaseRepos = getShowcaseRepos(filteredRepos);
+  const showcaseRepos = getShowcaseRepos(
+    repos.filter((repo) => repo.name.toLowerCase() !== username.toLowerCase())
+  );
   const categoryCards = buildProjectCategories(showcaseRepos);
-  const aiTrack = categoryCards.find((item) => item.id === 'category-ai-ml-vision');
-  const backendTrack = categoryCards.find((item) => item.id === 'category-backend-apis');
-  const flutterTrack = categoryCards.find((item) => item.id === 'category-flutter-apps');
   const caseStudies = portfolio.caseStudies
     .map((item) => ({
       ...item,
-      repo: showcaseRepos.find((repo) => repo.name === item.repoName)
+      repo: showcaseRepos.find((repo) => repo.name === item.repoName),
+      detail: getCaseStudyByRepo(item.repoName)
     }))
-    .slice(0, 3);
-
-  const currentRole = profileSnapshot.experience[0];
+    .slice(0, 4);
   const currentStudy = profileSnapshot.education[0];
-  const skillGroups = Object.entries(portfolio.skills);
-  const focusCards = [
-    { icon: BrainCircuit, ...portfolio.focusAreas[0], label: 'AI systems', href: aiTrack?.href || '/projects#category-ai-ml-vision' },
-    { icon: Server, ...portfolio.focusAreas[1], label: 'Backend systems', href: backendTrack?.href || '/projects#category-backend-apis' },
-    { icon: Smartphone, ...portfolio.focusAreas[2], label: 'Flutter delivery', href: flutterTrack?.href || '/projects#category-flutter-apps' }
-  ];
-  const heroHighlights = [
-    { label: portfolio.heroHighlights[0], href: aiTrack?.href || '/projects#category-ai-ml-vision' },
-    { label: portfolio.heroHighlights[1], href: aiTrack?.href || '/projects#category-ai-ml-vision' },
-    { label: portfolio.heroHighlights[2], href: flutterTrack?.href || '/projects#category-flutter-apps' }
-  ];
-  const featuredProjectLinks = caseStudies.map((item) => ({
-    ...item,
-    href: item.repo?.html_url || `https://github.com/dcaayushd/${item.repoName}`,
-    meta: item.repo ? `Updated ${formatGithubDate(item.repo.updated_at)}` : 'Featured on GitHub'
-  }));
+  const spotlightRepo = showcaseRepos.find((repo) => repo.name === 'AI-Parking-Analytics-System');
+  const chatRepo = showcaseRepos.find((repo) => repo.name === 'AI-Chat-Bot-Flutter');
+  const orderedExperience = [...profileSnapshot.experience].sort((left, right) => {
+    if (left.company === 'Nepal Telecom') return -1;
+    if (right.company === 'Nepal Telecom') return 1;
+    return 0;
+  });
 
   const navItems = [
-    { href: '#home', label: 'Home' },
-    { href: '#projects', label: 'Projects' },
-    { href: '#about', label: 'About' },
-    { href: '#timeline', label: 'Experience' },
+    { href: '#work', label: 'Work' },
+    { href: '#github', label: 'GitHub' },
+    { href: '#practice', label: 'Capabilities' },
+    { href: '#experience', label: 'Experience' },
     { href: '#contact', label: 'Contact' }
   ];
 
   const socialLinks = [
     { href: portfolio.github, label: 'GitHub', icon: Github, external: true },
     { href: portfolio.linkedin, label: 'LinkedIn', icon: Linkedin, external: true },
-    { href: portfolio.twitter, label: 'X', icon: Twitter, external: true },
-    { href: portfolio.instagram, label: 'Instagram', icon: Instagram, external: true },
-    { href: `mailto:${portfolio.email}`, label: 'Email', icon: Mail }
+    { href: 'mailto:' + portfolio.email, label: 'Email', icon: Mail }
   ];
-  const heroSocialLinks = [socialLinks[0], socialLinks[1], socialLinks[4]];
 
-  const snapshot = [
+  const practiceLinks = portfolio.focusAreas.map((area, index) => ({
+    ...area,
+    href: categoryCards[index]?.href || '/projects',
+    number: String(index + 1).padStart(2, '0')
+  }));
+
+  const communityWork = [
     {
-      icon: BriefcaseBusiness,
-      label: 'Current role',
-      value: currentRole ? `${currentRole.title} at ${currentRole.company}` : 'AI systems and product engineering',
-      href: '#timeline'
+      organization: 'Microsoft',
+      project: 'AI for Beginners',
+      detail: 'Open-source pull request focused on safer learning materials.',
+      href: 'https://github.com/microsoft/AI-For-Beginners/pull/638'
     },
     {
-      icon: GraduationCap,
-      label: 'Education',
-      value: currentStudy ? `${currentStudy.degree} at ${currentStudy.institution}` : 'Continuous learning across ML and backend systems',
-      href: '#timeline'
+      organization: 'OpenAI',
+      project: 'simple-evals',
+      detail: 'Contributed a public pull request to an evaluation-focused repository.',
+      href: 'https://github.com/openai/simple-evals/pull/111'
     },
     {
-      icon: MapPin,
-      label: 'Location',
-      value: portfolio.location,
-      href: '#contact'
+      organization: 'Microsoft',
+      project: 'teams.py',
+      detail: 'A published contribution to the Teams Python SDK.',
+      href: 'https://github.com/microsoft/teams.py/pull/438'
     }
   ];
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://' + portfolio.domain;
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: portfolio.name,
-    jobTitle: portfolio.role,
-    url: `https://${portfolio.domain}`,
-    sameAs: [portfolio.github, portfolio.linkedin, portfolio.twitter, portfolio.instagram],
-    worksFor: currentRole ? { '@type': 'Organization', name: currentRole.company } : undefined,
-    alumniOf: currentStudy ? { '@type': 'CollegeOrUniversity', name: currentStudy.institution } : undefined
+    '@graph': [
+      {
+        '@type': 'Person',
+        '@id': siteUrl + '#person',
+        name: portfolio.name,
+        alternateName: portfolio.handle,
+        jobTitle: portfolio.role,
+        url: siteUrl,
+        email: portfolio.email,
+        sameAs: [portfolio.github, portfolio.linkedin, portfolio.twitter, portfolio.instagram],
+        alumniOf: currentStudy ? { '@type': 'CollegeOrUniversity', name: currentStudy.institution } : undefined,
+        hasOccupation: {
+          '@type': 'Occupation',
+          name: 'AI/ML Engineer, Python Backend Developer, and Flutter Developer',
+          skills: ['Machine learning', 'computer vision', 'RAG', 'Python', 'FastAPI', 'Django', 'Flutter', 'Dart']
+        },
+        knowsAbout: [
+          'Machine learning',
+          'Computer vision',
+          'retrieval-augmented generation',
+          'Python',
+          'FastAPI',
+          'Flutter',
+          'AI product engineering'
+        ],
+        address: { '@type': 'PostalAddress', addressLocality: 'Kathmandu', addressCountry: 'NP' }
+      },
+      {
+        '@type': 'WebSite',
+        '@id': siteUrl + '#website',
+        url: siteUrl,
+        name: portfolio.name + ' — Portfolio',
+        description: portfolio.seo.description,
+        inLanguage: 'en',
+        publisher: { '@id': siteUrl + '#person' }
+      },
+      {
+        '@type': 'ProfilePage',
+        '@id': siteUrl + '#profile',
+        url: siteUrl,
+        name: 'Aayush D. C. Dangi — AI/ML Engineer, Python Backend Developer, and Flutter Developer',
+        description: portfolio.seo.description,
+        inLanguage: 'en',
+        isPartOf: { '@id': siteUrl + '#website' },
+        mainEntity: { '@id': siteUrl + '#person' }
+      }
+    ]
   };
 
   return (
-    <main className="site-shell">
-      <CursorGlow />
-      <div className="ambient ambient-left" />
-      <div className="ambient ambient-right" />
-      <div className="ambient ambient-bottom" />
+    <main className="home-v2-shell">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <a className="home-v2-skip-link" href="#main-content">Skip to content</a>
 
-      <header className="nav">
-        <div className="container">
-          <div className="nav-shell nav-inner">
-            <a href="#home" className="brand">
-              <span className="brand-copy">
-                <strong className="brand-signature">{portfolio.name}</strong>
-              </span>
+      <header className="home-v2-nav">
+        <div className="home-v2-container home-v2-nav-inner">
+          <a href="#home" className="home-v2-brand" aria-label="Aayush D C Dangi — home">
+            <span className="home-v2-brand-mark" aria-hidden="true">AD</span>
+            <span className="home-v2-brand-copy">
+              <span className="home-v2-brand-name">Aayush D C Dangi</span>
+              <span className="home-v2-brand-role">AI/ML · Python · Flutter</span>
+            </span>
+          </a>
+
+          <DesktopNav navItems={navItems} />
+
+          <div className="home-v2-nav-actions">
+            <a className="home-v2-resume-link" href={portfolio.resumePath} download>
+              Resume <Download size={15} />
             </a>
-
-            <DesktopNav navItems={navItems} />
-
-            <div className="nav-actions nav-actions-desktop">
-              <a className="button button-ghost nav-resume" href={portfolio.resumePath} download>
-                <Download size={16} />
-                Resume
-              </a>
-              <ThemeToggle />
-            </div>
-
-            <MobileNav links={navItems} resumePath={portfolio.resumePath} />
+            <ThemeToggle />
           </div>
+
+          <MobileNav links={navItems} resumePath={portfolio.resumePath} />
         </div>
       </header>
 
-    
-
-      <BackgroundPaths>
-        <section className="hero" id="home">
-          <div className="container hero-grid">
+      <div className="home-v2-main" id="main-content" tabIndex={-1}>
+        <section className="home-v2-hero" id="home" aria-labelledby="home-v2-title">
+          <div className="home-v2-container home-v2-hero-grid">
             <FadeIn>
-              <div className="hero-copy">
-                <div className="hero-meta" aria-label="Location and availability">
-                  <a href="#contact" className="eyebrow eyebrow-strong hero-meta-pill hero-meta-link">
-                    <MapPin size={16} />
-                    {portfolio.location}
-                  </a>
-                  <a href="#contact" className="eyebrow hero-meta-pill hero-meta-link">{portfolio.availabilityShort}</a>
+              <div className="home-v2-hero-copy">
+                <div className="home-v2-availability">
+                  <span aria-hidden="true" />
+                  Available for select engineering roles
                 </div>
+                <p className="home-v2-eyebrow">AI/ML Engineer · Python Backend Developer · Flutter Developer</p>
+                <h1 id="home-v2-title">
+                  I build AI/ML systems, Python backends, and <em>Flutter Applications.</em>
+                </h1>
+                <p className="home-v2-hero-lede">
+                  From computer vision and RAG pipelines to FastAPI services and Flutter apps, I build the reliable layers that make AI useful to people and teams.
+                </p>
 
-                <h1>{portfolio.heroTitle}</h1>
-                <GooeyTextRole roles={["AI/ML Engineer", "Flutter Developer"]} />
-                <p className="hero-summary">{portfolio.tagline}</p>
-
-                <div className="hero-tags" aria-label="Core strengths">
-                  {heroHighlights.map((tag) => (
-                    <a href={tag.href} className="hero-tag hero-tag-link" key={tag.label}>{tag.label}</a>
-                  ))}
-                </div>
-
-                <div className="hero-actions">
-                  <a className="button button-primary" href="/projects">
-                    <ArrowRight size={18} />
-                    View projects
+                <div className="home-v2-hero-actions">
+                  <a className="home-v2-button home-v2-button-primary" href="#work">
+                    Explore selected work <ArrowDown size={17} />
                   </a>
-                  <a className="button button-secondary" href={portfolio.resumePath} download>
-                    <Download size={18} />
-                    Resume
+                  <a className="home-v2-button home-v2-button-secondary" href={portfolio.resumePath} download>
+                    Download resume <Download size={17} />
                   </a>
                 </div>
 
-                <SocialLinks links={heroSocialLinks} className="hero-socials" />
+                <div className="home-v2-proof-grid" aria-label="Career highlights">
+                  <div className="home-v2-proof-card">
+                    <span>Based in</span>
+                    <strong><MapPin size={15} /> {portfolio.location}</strong>
+                  </div>
+                  <div className="home-v2-proof-card">
+                    <span>Applied AI</span>
+                    <strong>Nepal Telecom internship</strong>
+                  </div>
+                  <div className="home-v2-proof-card">
+                    <span>Open source</span>
+                    <strong>
+                      {chatRepo
+                        ? String(chatRepo.stargazers_count) + ' stars · ' + String(chatRepo.forks_count) + ' forks'
+                        : 'Active public work'}
+                    </strong>
+                  </div>
+                </div>
+
+                <SocialLinks links={socialLinks} className="home-v2-socials" />
               </div>
             </FadeIn>
 
-            <FadeIn delay={0.08}>
-              <div className="hero-curation-panel flex items-center justify-center h-full">
-                <SplineHeroOnly />
-              </div>
+            <FadeIn delay={0.1}>
+              <aside className="home-v2-spotlight" aria-label="Featured project">
+                <div className="home-v2-spotlight-topline">
+                  <span>Featured system</span>
+                  <span>{spotlightRepo ? 'Updated ' + formatGithubDate(spotlightRepo.updated_at) : 'GitHub project'}</span>
+                </div>
+
+                <div className="home-v2-spotlight-body">
+                  <p className="home-v2-spotlight-label">Camera input → model → operations dashboard</p>
+                  <h2>AI Parking Analytics</h2>
+                  <p>
+                    Calibrated camera feeds become occupancy signals, FastAPI events, and a usable operations dashboard.
+                  </p>
+                </div>
+
+                <dl className="home-v2-spotlight-evidence">
+                  <div>
+                    <dt>Input + model</dt>
+                    <dd>Camera zones · YOLOv8 · OpenCV</dd>
+                  </div>
+                  <div>
+                    <dt>Service layer</dt>
+                    <dd>FastAPI · WebSockets · SQL</dd>
+                  </div>
+                  <div>
+                    <dt>Product surface</dt>
+                    <dd>React analytics dashboard</dd>
+                  </div>
+                </dl>
+
+                <div className="home-v2-spotlight-actions">
+                  <Link href="/projects/ai-parking-analytics" className="home-v2-inline-link">
+                    Read case study <ArrowUpRight size={16} />
+                  </Link>
+                  <a
+                    href={spotlightRepo?.html_url || 'https://github.com/dcaayushd/AI-Parking-Analytics-System'}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="home-v2-icon-link"
+                    aria-label="View AI Parking Analytics repository"
+                  >
+                    <Github size={18} />
+                  </a>
+                </div>
+              </aside>
             </FadeIn>
           </div>
         </section>
-      </BackgroundPaths>
-      <section className="section" id="projects">
-        <div className="container">
-          <SectionHeading
-            eyebrow="Projects"
-            title="Selected work across AI/ML, backend, and Flutter."
-            description="A smaller set of projects that best shows the range: AI systems, backend thinking, and product-minded Flutter work."
-            action={
-              <div className="section-actions">
-                <a href="/projects" className="button button-secondary">
-                  <ArrowRight size={18} />
-                  All projects
-                </a>
-                <a href={portfolio.github} target="_blank" rel="noreferrer" className="button button-ghost">
-                  <Github size={18} />
-                  GitHub
-                </a>
+
+        <section className="home-v2-section home-v2-work" id="work" aria-labelledby="work-title">
+          <div className="home-v2-container">
+            <div className="home-v2-section-heading home-v2-work-heading">
+              <div>
+                <p className="home-v2-eyebrow">Selected work</p>
+                <h2 id="work-title">Selected AI/ML, backend, and Flutter systems.</h2>
               </div>
-            }
-          />
+              <div className="home-v2-section-heading-aside">
+                <p>Case studies that show the technical decisions behind model delivery, APIs, and product experience.</p>
+                <Link href="/projects" className="home-v2-inline-link">
+                  View all projects <ArrowRight size={16} />
+                </Link>
+              </div>
+            </div>
 
-          <div className="project-track-nav home-track-nav">
-            {categoryCards.map((item) => (
-              <a href={item.href} className="eyebrow project-track-link" key={item.id}>
-                {item.title}
-                <span>{item.count}</span>
-              </a>
-            ))}
-          </div>
-
-          {caseStudies.length ? (
-            <div className="case-study-grid">
-              {caseStudies.map((item, index) => (
-                <FadeIn key={item.repoName} delay={index * 0.06}>
-                  <article className="card panel-card case-study-card">
-                    <div className="case-study-top">
-                      <div>
-                        <div className="project-label">{item.label}</div>
-                        <h3>{item.title}</h3>
+            {caseStudies.length ? (
+              <div className="home-v2-project-grid">
+                {caseStudies.map((item, index) => (
+                  <FadeIn key={item.repoName} delay={index * 0.06}>
+                    <article className="home-v2-project-card">
+                      <div className="home-v2-project-card-topline">
+                        <span>{String(index + 1).padStart(2, '0')}</span>
+                        <span>{item.label}</span>
                       </div>
-                      <a
-                        href={item.repo?.html_url || `https://github.com/dcaayushd/${item.repoName}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="icon-button"
-                        aria-label={`Open ${item.title}`}
-                      >
-                        <ArrowUpRight size={16} />
-                      </a>
-                    </div>
+                      <div className="home-v2-project-card-body">
+                        <h3>{item.title}</h3>
+                        <p className="home-v2-project-result">{item.result}</p>
+                        <p className="home-v2-project-summary">{item.summary}</p>
+                      </div>
+                      <ul className="home-v2-project-points">
+                        {item.bullets.slice(0, 2).map((point) => <li key={point}>{point}</li>)}
+                      </ul>
+                      <div className="home-v2-project-card-footer">
+                        <span>{item.repo ? 'Updated ' + formatGithubDate(item.repo.updated_at) : 'Open source project'}</span>
+                        <div>
+                          {item.detail ? (
+                            <Link href={'/projects/' + item.detail.slug} className="home-v2-inline-link">
+                              Case study <ArrowUpRight size={15} />
+                            </Link>
+                          ) : null}
+                          <a
+                            href={item.repo?.html_url || 'https://github.com/dcaayushd/' + item.repoName}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="home-v2-project-repo"
+                            aria-label={'Open ' + item.title + ' on GitHub'}
+                          >
+                            <Github size={17} />
+                          </a>
+                        </div>
+                      </div>
+                    </article>
+                  </FadeIn>
+                ))}
+              </div>
+            ) : (
+              <div className="home-v2-empty-state">Projects will reappear as soon as GitHub data is available.</div>
+            )}
+          </div>
+        </section>
 
-                    <p className="case-study-result">{item.result}</p>
-                    <p className="muted case-study-summary">{item.summary}</p>
+        <section className="home-v2-section home-v2-github" id="github" aria-labelledby="github-title">
+          <div className="home-v2-container">
+            <div className="home-v2-section-heading home-v2-github-heading">
+              <div>
+                <p className="home-v2-eyebrow">GitHub activity</p>
+                <h2 id="github-title">Open-source work and current engineering activity.</h2>
+              </div>
+              <p>Recent repositories, curated for technical relevance and refreshed from GitHub.</p>
+            </div>
+            <div className="home-v2-github-feed">
+              <LiveGithubProjects fallbackProjects={showcaseRepos} />
+            </div>
+            <div className="home-v2-contributions" aria-label="Open source contributions">
+              <p className="home-v2-contributions-label">Selected public contributions</p>
+              <div className="home-v2-contributions-list">
+                {communityWork.map((item) => (
+                  <a href={item.href} target="_blank" rel="noreferrer" className="home-v2-contribution" key={item.project}>
+                    <span>{item.organization}</span>
+                    <strong>{item.project}</strong>
+                    <p>{item.detail}</p>
+                    <ArrowUpRight size={16} />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
 
-                    <div className="case-study-points">
-                      {item.bullets.map((point) => (
-                        <div className="case-study-point" key={point}>{point}</div>
-                      ))}
-                    </div>
+        <section className="home-v2-section home-v2-capabilities" id="practice" aria-labelledby="capabilities-title">
+          <div className="home-v2-container">
+            <div className="home-v2-capabilities-intro">
+              <div>
+                <p className="home-v2-eyebrow">Capabilities</p>
+                <h2 id="capabilities-title">AI/ML, Python backend, and Flutter—one product stack.</h2>
+              </div>
+              <p>I connect model development, FastAPI and Django services, and Flutter interfaces into dependable end-to-end products.</p>
+            </div>
 
-                    <div className="project-footer muted">
-                      <span><Star size={16} /> {item.repo?.stargazers_count ?? 0}</span>
-                      <span><GitFork size={16} /> {item.repo?.forks_count ?? 0}</span>
-                      <span>{item.repo ? `Updated ${formatGithubDate(item.repo.updated_at)}` : 'Live on GitHub'}</span>
+            <div className="home-v2-capability-grid">
+              {practiceLinks.map((area, index) => (
+                <FadeIn delay={0.06 + index * 0.07} key={area.title}>
+                  <a href={area.href} className="home-v2-capability-card">
+                    <span className="home-v2-capability-number">{area.number}</span>
+                    <div>
+                      <h3>{area.title}</h3>
+                      <p>{area.description}</p>
                     </div>
-                  </article>
+                    <ArrowUpRight size={20} />
+                  </a>
                 </FadeIn>
               ))}
             </div>
-          ) : null}
+          </div>
+        </section>
 
-          {!caseStudies.length ? (
-            <div className="card empty-state">
-              GitHub project data is temporarily unavailable. The projects section will repopulate automatically the next time the GitHub request succeeds.
+        <section className="home-v2-section home-v2-experience" id="experience" aria-labelledby="experience-title">
+          <div className="home-v2-container">
+            <div className="home-v2-section-heading">
+              <div>
+                <p className="home-v2-eyebrow">Experience</p>
+                <h2 id="experience-title">Applied AI and product engineering experience.</h2>
+              </div>
+              <p>Hands-on AI and Flutter work, informed by computer science study and publicly visible engineering practice.</p>
             </div>
-          ) : null}
-        </div>
-      </section>
-      <section className="section" id="about">
-        <div className="container">
-          <SectionHeading
-            eyebrow="About"
-            title="AI/ML systems, dependable backend engineering, and polished Flutter delivery."
-            description="I prefer clean experiments, readable systems, and delivery that holds up after launch."
-          />
 
-          <div className="capability-grid">
-            <div className="capability-column">
+            <div className="home-v2-experience-grid">
               <FadeIn>
-                <article className="card panel-card story-card">
-                  <p className="story-lead">{portfolio.aboutLead}</p>
-                  <p className="muted">{portfolio.longBio}</p>
-                  <div className="story-signature">Built around practical delivery, not buzzwords</div>
+                <article className="home-v2-experience-column">
+                  <div className="home-v2-experience-column-heading">
+                    <span>01</span>
+                    <h3>Professional work</h3>
+                  </div>
+                  <div className="home-v2-timeline">
+                    {orderedExperience.map((role) => (
+                      <article className="home-v2-timeline-item" key={role.company + role.title}>
+                        <div className="home-v2-timeline-meta">
+                          <span>{role.period}</span>
+                          <span>{role.state}</span>
+                        </div>
+                        <h4>{role.title}</h4>
+                        <strong>{role.company}</strong>
+                        <p>{role.description}</p>
+                      </article>
+                    ))}
+                  </div>
                 </article>
               </FadeIn>
-              
-              <FadeIn delay={0.12}>
-                <article className="card panel-card skills-panel">
-                  <div className="skills-panel-header">
-                    <h3>Stack I actually use</h3>
-                    <span className="muted">AI/ML, Python backend, Flutter apps</span>
-                  </div>
 
-                  <div className="skill-matrix">
-                    {skillGroups.map(([group, items]) => (
-                      <div className="skill-group" key={group}>
-                        <h4>{group}</h4>
-                        <div className="skill-chip-row">
-                          {items.map((item) => (
-                            <span className="skill-chip" key={item}>{item}</span>
-                          ))}
+              <FadeIn delay={0.1}>
+                <article className="home-v2-experience-column home-v2-education-column">
+                  <div className="home-v2-experience-column-heading">
+                    <span>02</span>
+                    <h3>Education</h3>
+                  </div>
+                  <div className="home-v2-timeline">
+                    {profileSnapshot.education.map((study) => (
+                      <article className="home-v2-timeline-item" key={study.institution + study.degree}>
+                        <div className="home-v2-timeline-meta">
+                          <span>{study.period}</span>
+                          <span>{study.state}</span>
                         </div>
-                      </div>
+                        <h4>{study.degree}</h4>
+                        <strong>{study.institution}</strong>
+                        <p>{study.description}</p>
+                      </article>
                     ))}
                   </div>
                 </article>
               </FadeIn>
             </div>
-
-            <FadeIn delay={0.08}>
-              <div className="capability-rail">
-                <div className="focus-grid">
-                  {focusCards.map((area) => {
-                    const Icon = area.icon;
-
-                    return (
-                      <a href={area.href} className="card panel-card focus-tile focus-tile-link" key={area.title}>
-                        <div className="focus-icon">
-                          <Icon size={18} />
-                        </div>
-                        <div className="mini-label">{area.label}</div>
-                        <h3>{area.title}</h3>
-                        <p className="muted">{area.description}</p>
-                        {'points' in area && Array.isArray(area.points) ? (
-                          <div className="focus-points">
-                            {area.points.map((point) => (
-                              <span className="focus-point" key={point}>{point}</span>
-                            ))}
-                          </div>
-                        ) : null}
-                      </a>
-                    );
-                  })}
-                </div>
-              </div>
-            </FadeIn>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="section" id="timeline">
-        <div className="container">
-          <SectionHeading
-            eyebrow="Experience"
-            title="Work and education."
-            description="Professional background and academic journey."
-          />
-
-          <div className="timeline-grid">
+        <section className="home-v2-contact" id="contact" aria-labelledby="contact-title">
+          <div className="home-v2-container home-v2-contact-grid">
             <FadeIn>
-              <div className="card panel-card" style={{ padding: '2rem', height: '100%' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
-                  <div className="profile-icon">
-                    <BriefcaseBusiness size={20} />
-                  </div>
-                  <h3 style={{ margin: 0 }}>Work Experience</h3>
-                </div>
-                <div className="linkedin-timeline">
-                  {profileSnapshot.experience.map((role) => (
-                    <div className="linkedin-timeline-item" key={role.company + role.title}>
-                      <div className="linkedin-timeline-indicator"></div>
-                      <div className="linkedin-timeline-content">
-                        <h4 style={{ margin: '0 0 0.25rem 0', fontSize: '1.05rem', fontWeight: 600 }}>{role.title}</h4>
-                        <div style={{ fontWeight: 500, color: 'var(--text)', marginBottom: '0.25rem' }}>{role.company}</div>
-                        <div className="muted" style={{ fontSize: '0.85rem', marginBottom: '0.75rem' }}>
-                          {role.period}
-                        </div>
-                        <p className="muted" style={{ lineHeight: 1.6, fontSize: '0.95rem' }}>
-                          {role.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              <div className="home-v2-contact-copy">
+                <p className="home-v2-eyebrow">Let’s work together</p>
+                <h2 id="contact-title">Need an AI product, backend service, or Flutter app built well?</h2>
+                <p>{portfolio.availability}. Tell me what you are building, where it is getting difficult, and what success needs to look like.</p>
+                <a className="home-v2-contact-email" href={'mailto:' + portfolio.email}>
+                  {portfolio.email} <ArrowUpRight size={18} />
+                </a>
+                <SocialLinks links={socialLinks} className="home-v2-contact-socials" />
               </div>
-            </FadeIn>
-
-            <FadeIn delay={0.08}>
-              <div className="card panel-card" style={{ padding: '2rem', height: '100%' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '2rem' }}>
-                  <div className="profile-icon">
-                    <GraduationCap size={20} />
-                  </div>
-                  <h3 style={{ margin: 0 }}>Education</h3>
-                </div>
-                <div className="linkedin-timeline">
-                  {profileSnapshot.education.map((study) => (
-                    <div className="linkedin-timeline-item" key={study.institution + study.degree}>
-                      <div className="linkedin-timeline-indicator"></div>
-                      <div className="linkedin-timeline-content">
-                        <h4 style={{ margin: '0 0 0.25rem 0', fontSize: '1.05rem', fontWeight: 600 }}>{study.institution}</h4>
-                        <div style={{ fontWeight: 500, color: 'var(--text)', marginBottom: '0.25rem' }}>{study.degree}</div>
-                        <div className="muted" style={{ fontSize: '0.85rem', marginBottom: '0.75rem' }}>
-                          {study.period}
-                        </div>
-                        <p className="muted" style={{ lineHeight: 1.6, fontSize: '0.95rem' }}>
-                          {study.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </FadeIn>
-          </div>
-        </div>
-      </section>
-
-      <section className="section" id="contact">
-        <div className="container">
-          <SectionHeading
-            eyebrow="Contact"
-            title="Fast contact."
-            description="If there is a role, project, or collaboration in mind, a short note is enough."
-          />
-
-          <div className="contact-grid">
-            <FadeIn>
-              <article className="card panel-card contact-card contact-card-primary">
-                <div className="contact-band">
-                  <div className="mini-label">Reach out directly</div>
-                  <span className="contact-response">Usually replies within a day</span>
-                </div>
-
-                <div className="contact-callout">
-                  <p className="contact-lead">Practical AI features, Python APIs, and polished Flutter delivery.</p>
-                </div>
-
-                <p className="muted contact-copy">{portfolio.availability}.</p>
-
-                <div className="contact-mini-grid">
-                  <div className="contact-mini-card">
-                    <span>Based in</span>
-                    <strong>{portfolio.location}</strong>
-                  </div>
-                  <div className="contact-mini-card">
-                    <span>Best for</span>
-                    <strong>AI/ML features, Python APIs, and Flutter app delivery</strong>
-                  </div>
-                </div>
-
-                <SocialLinks links={socialLinks} variant="button" className="contact-socials" />
-              </article>
             </FadeIn>
 
             <FadeIn delay={0.1}>
-              <article className="card panel-card contact-card">
-                <h3>Send a message</h3>
-                <p className="muted contact-intro">A short note about the role, product, or collaboration is enough.</p>
-                <ContactForm />
-              </article>
+              <div className="home-v2-contact-form">
+                <p className="home-v2-contact-form-label">Start a conversation</p>
+                <h3>Tell me about the work.</h3>
+                <ContactForm email={portfolio.email} />
+              </div>
             </FadeIn>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
-      <footer className="footer">
-        <div className="container footer-inner">
+      <footer className="home-v2-footer">
+        <div className="home-v2-container home-v2-footer-inner">
           <span>© {new Date().getFullYear()} {portfolio.name}</span>
-          <span>{portfolio.role}</span>
+          <span>AI/ML · Python · Flutter</span>
+          <a href="#home">Back to top <ArrowUpRight size={14} /></a>
         </div>
       </footer>
     </main>

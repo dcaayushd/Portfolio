@@ -14,12 +14,18 @@ export function CursorGlow() {
     }
 
     let frame = 0;
+    const root = document.documentElement;
+    const maxTranslate = 26;
     const update = (event: MouseEvent) => {
       if (frame) cancelAnimationFrame(frame);
       frame = window.requestAnimationFrame(() => {
         if (!glowRef.current) return;
         glowRef.current.style.left = `${event.clientX}px`;
         glowRef.current.style.top = `${event.clientY}px`;
+        const x = (event.clientX / window.innerWidth) * 2 - 1;
+        const y = (event.clientY / window.innerHeight) * 2 - 1;
+        root.style.setProperty('--robot-follow-x', `${x * maxTranslate}px`);
+        root.style.setProperty('--robot-follow-y', `${y * maxTranslate}px`);
       });
     };
 
@@ -27,6 +33,8 @@ export function CursorGlow() {
     return () => {
       if (frame) cancelAnimationFrame(frame);
       window.removeEventListener('mousemove', update);
+      root.style.setProperty('--robot-follow-x', '0px');
+      root.style.setProperty('--robot-follow-y', '0px');
     };
   }, []);
 

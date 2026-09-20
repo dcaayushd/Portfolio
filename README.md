@@ -1,6 +1,6 @@
 # Aayush Portfolio
 
-A production-ready portfolio built with Next.js, TypeScript, Framer Motion, and a static GitHub-synced build. The current version leans into a stronger landing experience with a live build console, animated signal rails, richer project storytelling, and a deployment path prepared for `www.aayushdcdangi.com.np`.
+A portfolio built with Next.js, TypeScript, Framer Motion, and a static GitHub-synced build. The current version leans into a stronger landing experience with a live build console, animated signal rails, richer project storytelling, and a deployment path prepared for `www.aayushdcdangi.com.np`.
 
 ## Why this stack
 

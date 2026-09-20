@@ -105,28 +105,44 @@ export function GooeyText({
                       0 0 0 255 -140"
             />
           </filter>
+          <filter id="liquify">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.02"
+              numOctaves="3"
+              result="noise"
+            />
+            <feDisplacementMap
+              in="SourceGraphic"
+              in2="noise"
+              scale="2"
+              xChannelSelector="R"
+              yChannelSelector="G"
+            />
+          </filter>
         </defs>
       </svg>
 
       <div
-        className="flex items-center justify-center"
-        style={{ filter: "url(#threshold)" }}
+        style={{ filter: "url(#threshold)", position: "relative", display: "block" }}
       >
         <span
           ref={text1Ref}
           className={cn(
-            "absolute inline-block select-none text-center text-6xl md:text-[60pt]",
+            "block select-none text-6xl md:text-[60pt]",
             "text-foreground",
             textClassName
           )}
+          style={{ filter: "url(#liquify)", lineHeight: 1 }}
         />
         <span
           ref={text2Ref}
           className={cn(
-            "absolute inline-block select-none text-center text-6xl md:text-[60pt]",
+            "absolute select-none text-6xl md:text-[60pt]",
             "text-foreground",
             textClassName
           )}
+          style={{ filter: "url(#liquify)", position: "absolute", top: 0, left: 0, lineHeight: 1 }}
         />
       </div>
     </div>

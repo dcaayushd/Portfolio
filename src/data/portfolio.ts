@@ -1,9 +1,10 @@
 export const portfolio = {
-  name: 'Aayush D.C Dangi',
-  role: 'AI/ML Engineer · Python Backend · Flutter Apps',
+  name: 'Aayush D C Dangi',
+  handle: 'dcaayushd',
+  role: 'AI/ML Engineer · Python Backend Developer · Flutter Developer',
   location: 'Kathmandu, Nepal',
   email: 'dc.aayush.dangi@gmail.com',
-  heroTitle: 'AI/ML engineer shipping production models: trained systems, scalable APIs, and native mobile experiences.',
+  heroTitle: 'Aayush D C Dangi',
   tagline:
     'I turn models into usable products, from training and inference to Python backends, mobile interfaces, and delivery that feels ready for real users.',
   aboutLead: 'AI/ML workflows, dependable Python backends, and Flutter apps built with production discipline.',
@@ -17,9 +18,9 @@ export const portfolio = {
   instagram: 'https://www.instagram.com/dcaayushd',
   domain: 'www.aayushdcdangi.com.np',
   resumePath: '/resume.pdf',
-  availability: 'Open to AI/ML, backend, and Flutter roles',
-  availabilityShort: 'Open to internships + junior roles',
-  heroHighlights: ['AI/ML systems', 'AI product systems', 'Flutter UI/UX'],
+  availability: 'Open to AI/ML, Python backend, and Flutter engineering roles',
+  availabilityShort: 'Open to AI/ML and Flutter roles',
+  // heroHighlights: ['AI/ML systems', 'AI product systems', 'Flutter UI/UX'],
   signalRail: [
     'Fine-tuned LLM workflows',
     'RAG-backed product thinking',
@@ -35,18 +36,18 @@ export const portfolio = {
   ],
   focusAreas: [
     {
-      title: 'AI/ML systems',
-      description: 'Model training, inference workflows, AI/ML projects, and AI-backed product behavior shaped for practical use.',
-      points: ['Model workflows', 'Model inference and evaluation', 'AI product delivery']
+      title: 'Machine learning & computer vision',
+      description: 'Applied ML, computer vision, RAG workflows, evaluation, and inference design for products that need to work beyond a notebook.',
+      points: ['Model workflows', 'Inference and evaluation', 'AI product delivery']
     },
     {
-      title: 'Backend systems and APIs',
-      description: 'FastAPI and Django services, auth-ready architecture, async tasks, and backend logic that survives iteration.',
+      title: 'Python backend & ML infrastructure',
+      description: 'FastAPI and Django services with REST APIs, authentication, async jobs, caching, retrieval layers, and deployment-ready structure.',
       points: ['API and service design', 'Async jobs and caching', 'Deployment-ready structure']
     },
     {
-      title: 'Flutter apps and UI polish',
-      description: 'Mobile apps with polished UI states, responsive layouts, and interaction details that feel finished.',
+      title: 'Full-stack Flutter products',
+      description: 'Flutter applications connected to real services, with responsive interfaces, persistent states, and product-focused interaction design.',
       points: ['Responsive UI/UX', 'App architecture', 'State and interaction polish']
     }
   ],
@@ -74,6 +75,22 @@ export const portfolio = {
     }
   ],
   projectPreviews: {
+    'AI-Voice-Cloning-System': {
+      demo: '',
+      note: 'Consented voice platform with streaming, async orchestration, evaluation, and observability.'
+    },
+    'AI-Parking-Analytics-System': {
+      demo: '',
+      note: 'Computer-vision parking operations platform with calibrated slots, live events, and analytics.'
+    },
+    'Customer_Churn_Prediction': {
+      demo: '',
+      note: 'End-to-end churn workflow: ingestion, explainability, API serving, and monitoring.'
+    },
+    'AI-PR-Review-Bot': {
+      demo: '',
+      note: 'GitHub App that turns pull-request review into structured, actionable feedback.'
+    },
     'Facial-Emotion-Recognition-system': {
       demo: '',
       note: 'Computer vision pipeline for facial emotion detection and inference-ready delivery.'
@@ -92,18 +109,29 @@ export const portfolio = {
     }
   },
   featuredRepos: [
-    'Documentify',
-    'Facial-Emotion-Recognition-system',
-    'AI-Chat-Bot-Flutter',
-    'Handwritten-Digit-Recognition'
+    'AI-Voice-Cloning-System',
+    'AI-Parking-Analytics-System',
+    'Customer_Churn_Prediction',
+    'AI-PR-Review-Bot'
   ],
   projectCategoryOverrides: {
+    'AI-Voice-Cloning-System': 'AI/ML & Vision',
+    'AI-Parking-Analytics-System': 'AI/ML & Vision',
+    'Self-Healing-RAG': 'AI/ML & Vision',
+    'Customer_Churn_Prediction': 'AI/ML & Vision',
+    'AI-PR-Review-Bot': 'Backend & APIs',
+    'Zinemo': 'Flutter Apps',
     'Documentify': 'AI/ML & Vision',
     'Facial-Emotion-Recognition-system': 'AI/ML & Vision',
     'Handwritten-Digit-Recognition': 'AI/ML & Vision',
     'AI-Chat-Bot-Flutter': 'Flutter Apps'
   },
   projectPriorities: {
+    'AI-Voice-Cloning-System': 120,
+    'AI-Parking-Analytics-System': 116,
+    'Customer_Churn_Prediction': 112,
+    'AI-PR-Review-Bot': 108,
+    'Self-Healing-RAG': 104,
     'Documentify': 100,
     'Facial-Emotion-Recognition-system': 96,
     'AI-Chat-Bot-Flutter': 92,
@@ -111,33 +139,43 @@ export const portfolio = {
   },
   caseStudies: [
     {
-      repoName: 'Documentify',
-      label: 'AI product case study',
-      title: 'Documentify',
-      result: 'Document analysis experience combining AI-backed Q&A, structured processing, and a Flutter product surface.',
+      repoName: 'AI-Voice-Cloning-System',
+      label: 'Applied AI platform',
+      title: 'Voice Cloning Platform',
+      result: 'A consent-first, multi-tenant voice platform with real-time synthesis, evaluation, and production-minded controls.',
       summary:
-        'Built a document-focused product that connects AI-assisted analysis with a clear mobile-style interface instead of leaving the work as a model demo.',
-      bullets: ['Document Q&A workflow', 'AI-backed analysis features', 'Flutter product interface'],
+        'Designed beyond the model layer: enrollment checks, async workloads, observability, audit logs, and streaming delivery are part of the system.',
+      bullets: ['Consent and anti-spoofing', 'WebSocket synthesis', 'Celery + pgvector'],
       categoryId: 'category-ai-ml-vision'
     },
     {
-      repoName: 'Facial-Emotion-Recognition-system',
-      label: 'Computer vision case study',
-      title: 'Facial Emotion Recognition System',
-      result: 'Facial emotion recognition pipeline built around image preprocessing, model inference, and real-time emotion detection.',
+      repoName: 'AI-Parking-Analytics-System',
+      label: 'Computer vision system',
+      title: 'AI Parking Analytics',
+      result: 'Computer vision for parking operations, turning calibrated camera feeds into occupancy signals and practical analytics.',
       summary:
-        'Focused on turning computer vision work into a project with clearer inference flow, model output, and practical real-world use.',
-      bullets: ['OpenCV and model pipeline', 'Emotion classification workflow', 'Inference-ready structure'],
+        'Built around the operational layer as much as detection: polygon calibration, live updates, API design, storage, and a dashboard.',
+      bullets: ['YOLOv8 detection', 'Live WebSocket events', 'FastAPI + React'],
+      categoryId: 'category-ai-ml-vision'
+    },
+    {
+      repoName: 'Customer_Churn_Prediction',
+      label: 'ML operations system',
+      title: 'Customer Churn Prediction',
+      result: 'An end-to-end churn analytics system that connects modeling, explanations, retention actions, and monitoring.',
+      summary:
+        'The project makes a better hiring signal than a notebook: it includes ingestion, feature engineering, API serving, an analytics dashboard, and automation.',
+      bullets: ['FastAPI serving', 'Model explainability', 'Drift monitoring'],
       categoryId: 'category-ai-ml-vision'
     },
     {
       repoName: 'AI-Chat-Bot-Flutter',
-      label: 'Flutter product case study',
+      label: 'Flutter / AI product',
       title: 'AI Chat Bot Flutter',
-      result: 'Flutter app with polished chat UX, local persistence, and live model interaction.',
+      result: 'A public Flutter client for Gemini with local history and a conversational interface—87 stars and 17 forks on GitHub.',
       summary:
-        'Designed a mobile AI experience with clear conversation states, responsive layouts, and product-style visual polish.',
-      bullets: ['Gemini-backed chat flow', 'Persistent local history', 'Responsive Flutter UI'],
+        'This is the mobile product signal: an approachable AI interface, maintained as a real open-source Flutter repository rather than a one-off UI exercise.',
+      bullets: ['Flutter + Gemini', 'Hive persistence', '87 stars · 17 forks'],
       categoryId: 'category-flutter-apps'
     }
   ],
@@ -165,6 +203,22 @@ export const portfolio = {
   },
   experience: [
     {
+      title: 'Freelance AI/ML Engineer',
+      company: 'Upwork',
+      period: '2024 - Ongoing',
+      state: 'Active',
+      description:
+        'Freelance AI/ML engineering work building machine learning systems, model training pipelines, and AI-backed product features for international clients.'
+    },
+    {
+      title: 'Freelance Flutter Developer',
+      company: 'Fiverr',
+      period: 'Jan 2023 - Ongoing',
+      state: 'Active',
+      description:
+        'Building and delivering production-grade Flutter applications with focus on responsive UI, state management, and delivery-ready quality.'
+    },
+    {
       title: 'AI/ML Engineer Intern',
       company: 'Nepal Telecom',
       period: 'Jan 2026 - Mar 2026',
@@ -177,7 +231,7 @@ export const portfolio = {
     {
       degree: 'B.Sc. CSIT',
       institution: 'Amrit Campus',
-      period: 'Apr 2022 - Mar 2026',
+      period: 'Apr 2022 - Jun 2026',
       state: 'Completed',
       description:
         'Coursework spanning programming foundations, core systems, databases, artificial intelligence, software engineering, web delivery, project work, internship-based learning, and selected electives in multimedia, commerce, project management, and cloud topics.',
@@ -205,11 +259,19 @@ export const portfolio = {
             'Advanced Java Programming, Data Warehousing and Data Mining, Principles of Management, Project Work, Software Project Management, Advanced Database, Internship, Introduction to Cloud Computing, Geographical Information System'
         }
       ]
+    },
+    {
+      degree: 'High School - Science',
+      institution: 'Prasadi Academy',
+      period: 'Jul 2019 - Sep 2021',
+      state: 'Completed',
+      description:
+        'Secondary science education with focus on physics, chemistry, and mathematics fundamentals.'
     }
   ],
   seo: {
-    title: 'Aayush D.C Dangi | AI/ML Engineer, Python Backend & Flutter Apps',
+    title: 'Aayush D C Dangi | AI/ML, Python Backend & Flutter Developer',
     description:
-      'Portfolio of Aayush D.C Dangi — AI/ML Engineer focused on end-to-end AI products, Python backend systems, and Flutter app development.'
+      'Aayush D C Dangi is an AI/ML engineer and Python backend developer building computer vision, RAG, FastAPI, and Flutter Applications.'
   }
 };
