@@ -69,7 +69,15 @@ export function toPublicGithubRepo(value: unknown): GithubRepo | null {
   const updatedAt = asText(repo.updated_at, 64);
   const pushedAt = asText(repo.pushed_at, 64);
 
-  if (!Number.isSafeInteger(id) || id < 0 || !name || !htmlUrl || !updatedAt || !pushedAt) {
+  if (
+    typeof id !== 'number' ||
+    !Number.isSafeInteger(id) ||
+    id < 0 ||
+    !name ||
+    !htmlUrl ||
+    !updatedAt ||
+    !pushedAt
+  ) {
     return null;
   }
 

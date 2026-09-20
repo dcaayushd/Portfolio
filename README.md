@@ -90,8 +90,9 @@ Recommended for this portfolio because it is free and extremely fast for static 
 2. In Cloudflare, open **Workers & Pages**
 3. Create a new **Pages** project and connect your GitHub repository
 4. Use:
-   - Build command: `npm run build`
+   - Build command: `npm run build:cloudflare`
    - Build output directory: `out`
+   - Do not use `npx @cloudflare/next-on-pages@1`; this site is a static export and does not need the Workers adapter.
 5. Add the same environment variables from `.env.local`
 6. Deploy
 
